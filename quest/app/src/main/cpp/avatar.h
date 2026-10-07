@@ -168,6 +168,8 @@ public:
     void SetTouchPulse(float u, float v, float i) {
         pulseU_ = u; pulseV_ = v; pulseI_ = i;
     }
+    // v0.6.2: display brightness multiplier for the video glass.
+    void SetBrightness(float b) { brightness_ = b; }
     // v0.4.0: Meta-fluent floating panel (fixed mode): dark metal frame +
     // rounded video glass, sized w x h meters. Reuses the watch meshes.
     void DrawPanel(const Mat4& viewProj, const Vec3& camPos,
@@ -201,6 +203,8 @@ private:
         // v0.4.0: touch ripple
         GLint uPulse = -1;    // vec2: ripple center in UV
         GLint uPulseI = -1;   // ripple intensity 0..1
+        // v0.6.2: display brightness
+        GLint uBrightness = -1;
         // v0.4.0: metal glow (pre-detach warning)
         GLint uGlow = -1;
         GLint uGlowColor = -1;
@@ -235,6 +239,8 @@ private:
     float watchScale_ = 1.0f;
     float watchGlow_ = 0.0f;
     float pulseU_ = 0.5f, pulseV_ = 0.5f, pulseI_ = 0.0f;
+    // v0.6.2: video glass brightness (control bar).
+    float brightness_ = 1.0f;
 
     bool ok_ = false;
 };

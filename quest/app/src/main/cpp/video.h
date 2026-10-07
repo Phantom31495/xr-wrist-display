@@ -29,6 +29,8 @@ public:
     void Update();  // updateTexImage()
     void GetTransformMatrix(float out16[16]);
     void Release();
+    // v0.6.2: number of successful frame updates (for stream health).
+    uint64_t FrameCount() const { return frames_; }
 
 private:
     JavaVM* vm_ = nullptr;
@@ -38,6 +40,10 @@ private:
     ANativeWindow* window_ = nullptr;
 
     JNIEnv* Env();
+
+    // v0.6.2: incremented each time updateTexImage() delivers a new frame.
+    // Called on the GL thread only.
+    uint64_t frames_ = 0;
 };
 
 // H.264 decoder: feeds Annex-B NAL units into AMediaCodec, renders to the

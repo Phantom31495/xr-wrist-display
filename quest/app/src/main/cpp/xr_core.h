@@ -24,6 +24,7 @@
 #include "devtools.h"
 #include "environment.h"
 #include "menu.h"
+#include "projection.h"
 
 namespace xrwrist {
 
@@ -203,6 +204,13 @@ private:
     EnvironmentRenderer env_;
     bool envReady_ = false;
     VrMenu menu_;
+    // ---- v0.6.2: phone-screen projection UI ----
+    ProjectionUI projUI_;
+    bool projUiReady_ = false;
+    uint64_t lastVideoFrames_ = 0;  // for fps measurement
+    float videoFps_ = 0.0f;
+    float fpsWindowT_ = 0.0f;
+    bool wasStreaming_ = false;  // v0.6.2: drop watchdog
     std::atomic<int> netGen_{0};  // StartNetwork generation (for Stop)
 };
 

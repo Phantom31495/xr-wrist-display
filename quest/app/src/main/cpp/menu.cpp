@@ -267,6 +267,18 @@ void VrMenu::RebuildRows() {
             [this]() {
                 if (actions_.togglePassthrough) actions_.togglePassthrough();
             }});
+        rows_.push_back(Row{
+            "",
+            [this]() {
+                return std::string("Projection: ") +
+                       (actions_.projectionModeName
+                            ? actions_.projectionModeName()
+                            : "Wrist");
+            },
+            [this]() {
+                if (actions_.cycleProjectionMode)
+                    actions_.cycleProjectionMode();
+            }});
         rows_.push_back(Row{"Tech info", {},
                             [this]() {
                                 if (actions_.toggleDiagnostics)

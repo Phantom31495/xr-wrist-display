@@ -54,6 +54,11 @@ enum class ConfigKey {
     PassthroughEnabled,  // bool: mixed-reality passthrough (default true)
     EnvironmentEnabled,  // bool: VR room backdrop (default true)
 
+    // v0.6.2: phone-screen projection UI
+    ProjectionMode,      // int: 0=wrist, 1=expanded, 2=theater (default 0)
+    DisplayBrightness,   // float: video brightness 0.3..1.5 (default 1.0)
+    OrientationLocked,   // bool: freeze panel world pose (default false)
+
     // System
     FirstRunComplete,    // bool: onboarding shown (default false)
 };

@@ -87,6 +87,9 @@ void SurfaceTextureHelper::Update() {
     if (env->ExceptionCheck()) {
         // No new frame yet is NOT an error here; just clear and continue.
         env->ExceptionClear();
+    } else {
+        // v0.6.2: a new frame arrived — count it for stream health.
+        ++frames_;
     }
 }
 

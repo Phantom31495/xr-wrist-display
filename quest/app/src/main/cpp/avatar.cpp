@@ -460,6 +460,7 @@ uniform float uCornerR;  // corner radius in height-normalized UV units
 uniform float uAspect;   // face width / face height
 uniform vec2 uPulse;     // v0.4.0: touch ripple center in UV
 uniform float uPulseI;   // v0.4.0: touch ripple intensity 0..1
+uniform float uBrightness;  // v0.6.2: display brightness 0.3..1.5
 out vec4 fragColor;
 float sdRoundBox(vec2 p, vec2 b, float r) {
     vec2 q = abs(p) - b + r;
@@ -471,14 +472,17 @@ void main() {
     if (d > 0.0) discard;
     vec2 uv = (uTexMat * vec4(vUv, 0.0, 1.0)).xy;
     vec3 c = texture(uTex, uv).rgb;
+    // v0.6.2: user-adjustable brightness (control bar).
+    c *= uBrightness;
     float band = smoothstep(0.16, 0.0, abs(vUv.x * 0.65 + vUv.y - 0.72));
     c += vec3(1.0, 0.98, 0.94) * band * 0.06;
     float edge = smoothstep(0.0, 0.035, -d);
     c *= mix(0.70, 1.0, edge);
     // v0.4.0: touch ripple — soft expanding ring at the touch point.
+    // v0.6.2: warm-amber tint (Soft-Tech) instead of white.
     float pd = length((vUv - uPulse) * vec2(uAspect, 1.0));
     float ring = smoothstep(0.09, 0.02, pd) * uPulseI;
-    c += vec3(1.0, 0.98, 0.95) * ring * 0.55;
+    c += vec3(1.0, 0.62, 0.15) * ring * 0.65;
     fragColor = vec4(c, 1.0);
 }
 )";
@@ -600,6 +604,8 @@ bool AvatarRenderer::BuildPrograms() {
     glassProg_.uAspect = glGetUniformLocation(glassProg_.prog, "uAspect");
     glassProg_.uPulse = glGetUniformLocation(glassProg_.prog, "uPulse");
     glassProg_.uPulseI = glGetUniformLocation(glassProg_.prog, "uPulseI");
+    glassProg_.uBrightness =
+        glGetUniformLocation(glassProg_.prog, "uBrightness");
     metalProg_.uGlow = glGetUniformLocation(metalProg_.prog, "uGlow");
     metalProg_.uGlowColor = glGetUniformLocation(metalProg_.prog, "uGlowColor");
     uDebugKind_ = glGetUniformLocation(debugProg_.prog, "uDebugKind");
@@ -826,6 +832,7 @@ void AvatarRenderer::DrawWatch(const Mat4& viewProj, const Vec3& camPos,
     glUniform1f(glassProg_.uAspect, kWatchFaceW / kWatchFaceH);
     glUniform2f(glassProg_.uPulse, pulseU_, pulseV_);
     glUniform1f(glassProg_.uPulseI, pulseI_);
+    glUniform1f(glassProg_.uBrightness, brightness_);
     Mat4 glassM = watchW * Trans(0.0f, 0.0f, 0.0012f);
     DrawMesh(glass_, glassProg_, viewProj * glassM, glassM);
     glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
@@ -865,6 +872,7 @@ void AvatarRenderer::DrawPanel(const Mat4& viewProj, const Vec3& camPos,
     glUniform1f(glassProg_.uAspect, w / h);
     glUniform2f(glassProg_.uPulse, pulseU_, pulseV_);
     glUniform1f(glassProg_.uPulseI, pulseI_);
+    glUniform1f(glassProg_.uBrightness, brightness_);
     float gsx = w / kWatchFaceW;
     float gsy = h / kWatchFaceH;
     Mat4 glassM = panelW * Trans(0.0f, 0.0f, 0.0012f) * Scale(gsx, gsy, 1.0f);

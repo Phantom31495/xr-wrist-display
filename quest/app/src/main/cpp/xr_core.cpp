@@ -535,6 +535,7 @@ void XrApp::StopNetwork() {
     videoClient_.Stop();
     videoReady_ = false;
     phoneIp_.clear();
+    wasStreaming_ = false;  // v0.6.2: user stop, not a drop
     Notify::Instance().Info("Stream stopped", "Menu > Stream to restart");
     LOGI("v0.6.0: network stopped by user");
 }
@@ -698,10 +699,22 @@ bool XrApp::Init(android_app* app) {
                 on ? "Passthrough on" : "VR room on",
                 on ? "Mixed reality" : "Virtual environment");
         };
-        actions.versionString = []() { return std::string("v0.6.1"); };
+        actions.versionString = []() { return std::string("v0.6.2"); };
+        // v0.6.2: projection mode row (wrist / expanded / theater).
+        // Note: projUI_ is init'd after the menu; the lambdas run on
+        // user tap, by which time projUI_ is ready.
+        actions.projectionModeName = [this]() {
+            return std::string(ProjectionModeName(projUI_.GetMode()));
+        };
+        actions.cycleProjectionMode = [this]() { projUI_.CycleMode(); };
         if (!menu_.Init(actions)) {
             LOGW("v0.6.0: menu init failed (non-fatal)");
         }
+    }
+    // v0.6.2: phone-screen projection UI (frame, controls, modes).
+    projUiReady_ = projUI_.Init();
+    if (!projUiReady_) {
+        LOGW("v0.6.2: projection UI init failed (non-fatal)");
     }
     if (!InitXrSession()) return false;
     if (!InitSwapchains()) return false;
@@ -754,6 +767,7 @@ void XrApp::Shutdown() {
     quadRenderer_.Shutdown();
     menu_.Shutdown();
     env_.Shutdown();
+    projUI_.Shutdown();
     if (videoTex_) {
         glDeleteTextures(1, &videoTex_);
         videoTex_ = 0;
@@ -971,6 +985,10 @@ void XrApp::BuildDiagContent() {
         : (detachT_ < 0.5f ? "wrist" : "floating");
     o.Printf("display %s (%d%%) at %s", zoomName, (int)(zoomT_ * 100.0f),
              anchorName);
+    // v0.6.2: stream health + projection state.
+    o.Printf("stream %.0f fps  projection %s  brightness %d%%", videoFps_,
+             ProjectionModeName(projUI_.GetMode()),
+             (int)(projUI_.GetBrightness() * 100.0f));
     o.Printf("auto-move %s  finger %s  voice %s",
              autoTransition_ ? "on" : "off",
              fingerTouchDown_ ? "touching" : "up",
@@ -1355,9 +1373,20 @@ void XrApp::ExecuteVoiceCommand(const std::string& cmd) {
         engageDetached_ = false;  // manual, not engage-caused
         heard("Display locked in place here");
         LOGW("v0.5.0: voice -> world lock");
+    } else if (has("theater") || has("cinema") || has("movie mode")) {
+        // v0.6.2: cinema-size projection for media.
+        if (projUiReady_) projUI_.SetMode(ProjectionMode::THEATER);
+        heard("Theater mode — enjoy the show");
+        LOGW("v0.6.2: voice -> theater mode");
+    } else if (has("expanded") || has("large view") || has("big screen")) {
+        // v0.6.2: large floating panel.
+        if (projUiReady_) projUI_.SetMode(ProjectionMode::EXPANDED);
+        heard("Expanded view");
+        LOGW("v0.6.2: voice -> expanded mode");
     } else {
-        Notify::Instance().Info("Didn't catch that",
-                                "Try 'bigger', 'smaller', or 'wrist mode'");
+        Notify::Instance().Info(
+            "Didn't catch that",
+            "Try 'bigger', 'theater mode', or 'wrist mode'");
         LOGW("v0.5.0: voice command not recognized: \"%s\"", cmd.c_str());
     }
 }
@@ -1514,11 +1543,62 @@ void XrApp::RenderLayer(XrTime predictedTime) {
                           touchPulseT_ < 0.5f ? 1.0f - touchPulseT_ / 0.5f
                                               : 0.0f);
 
+    // v0.6.2: video fps from the decoder frame counter (1s window).
+    {
+        uint64_t fc = surfaceTexture_.FrameCount();
+        fpsWindowT_ += dt;
+        if (fpsWindowT_ >= 1.0f) {
+            videoFps_ = (float)(fc - lastVideoFrames_) / fpsWindowT_;
+            lastVideoFrames_ = fc;
+            fpsWindowT_ = 0.0f;
+        }
+    }
+    // v0.6.2: connection-drop watchdog — human-readable warning with
+    // recovery action (StopNetwork notifies itself, so this only fires
+    // on unexpected drops).
+    {
+        bool streamingNow = IsStreaming();
+        if (wasStreaming_ && !streamingNow) {
+            Notify::Instance().Error(
+                "Connection lost",
+                "Check WiFi, then tap Start on the phone app");
+            LOGW("v0.6.2: unexpected stream drop detected");
+        }
+        wasStreaming_ = streamingNow;
+    }
+    // v0.6.2: projection modes (wrist/expanded/theater) with smooth
+    // transitions, plus orientation lock. Applies on top of the
+    // wrist<->fixed blend computed above.
+    if (projUiReady_ && head.valid) {
+        projUI_.ApplyProjectionMode(head, dispPos, dispQuat, dispW, dispH,
+                                    dt);
+    }
+    // v0.6.2: display brightness from the control bar.
+    if (avatarReady_) avatar_.SetBrightness(projUI_.GetBrightness());
+
+    // v0.6.2: gaze-on-display for the control bar reveal.
+    bool gazeOnDisplay = false;
+    if (head.valid) {
+        Vec3 fwd = head.quat.rotate(Vec3(0, 0, -1));
+        float gu, gv;
+        gazeOnDisplay =
+            RayQuadIntersect(head.pos, fwd, dispPos, dispQuat, dispW, dispH,
+                             gu, gv);
+    }
+    if (projUiReady_ && head.valid) {
+        projUI_.Update(dt, input_, head, dispPos, dispQuat, dispW, dispH,
+                       gazeOnDisplay, videoFps_, IsStreaming(),
+                       fingerTouchDown_, fingerU_, fingerV_,
+                       (float)frameCount_ / 72.0f);
+    }
+
     // v0.6.0: when the menu is open and the pointer is on it, the menu
     // captures input — a trigger pull on a menu button must not also
     // send a touch to the phone.
+    // v0.6.2: same contract for the projection control bar.
     bool menuCaptures = menu_.ConsumesInput();
-    if (!menuCaptures) {
+    bool controlsCapture = projUiReady_ && projUI_.ConsumesInput();
+    if (!menuCaptures && !controlsCapture) {
         HandleTouch(head, dispPos, dispQuat, dispW, dispH);
         // v0.4.0: direct finger touch takes priority over the controller ray.
         HandleFingerTouch(dispPos, dispQuat, dispW, dispH);
@@ -1661,8 +1741,24 @@ void XrApp::RenderLayer(XrTime predictedTime) {
             scale.m[0] = dispW;
             scale.m[5] = dispH;
             Mat4 mvp = viewProj * modelMat * scale;
+            // v0.6.2: brightness applies to the fallback quad too.
+            float btint[4] = {tint[0], tint[1], tint[2], tint[3]};
+            if (projUiReady_) {
+                float b = projUI_.GetBrightness();
+                btint[0] *= b;
+                btint[1] *= b;
+                btint[2] *= b;
+            }
             quadRenderer_.Draw(sc.fbos[imgIdx], sc.width, sc.height, mvp,
-                               videoTex_, tint);
+                               videoTex_, btint);
+        }
+
+        // v0.6.2: projection frame dressing (shadow, amber ring, status
+        // dot, touch dot) + the auto-hiding control bar.
+        if (projUiReady_ && videoTex_) {
+            projUI_.DrawFrame(viewProj, dispPos, dispQuat, dispW, dispH,
+                              videoFps_, IsStreaming());
+            if (head.valid) projUI_.DrawControls(viewProj, head.pos);
         }
 
         // Godmode diagnostics overlay (head-locked panel, both eyes).

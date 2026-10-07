@@ -37,6 +37,9 @@ struct MenuActions {
     std::function<bool()> isPassthrough;     // effective MR state
     std::function<void()> togglePassthrough; // VR <-> passthrough
     std::function<std::string()> versionString;
+    // v0.6.2: projection mode (wrist / expanded / theater).
+    std::function<std::string()> projectionModeName;
+    std::function<void()> cycleProjectionMode;
 };
 
 class VrMenu {

@@ -41,6 +41,10 @@ void Config::ResetDefaults() {
     // v0.6.0: environment + menu
     bools_[ConfigKey::PassthroughEnabled] = true;
     bools_[ConfigKey::EnvironmentEnabled] = true;
+    // v0.6.2: phone-screen projection UI
+    ints_[ConfigKey::ProjectionMode] = 0;
+    floats_[ConfigKey::DisplayBrightness] = 1.0f;
+    bools_[ConfigKey::OrientationLocked] = false;
     // System
     bools_[ConfigKey::FirstRunComplete] = false;
 }
@@ -135,6 +139,11 @@ static const char* KeyName(ConfigKey key) {
         case ConfigKey::AvatarEnabled: return "avatar_enabled";
         case ConfigKey::WatchGlowIntensity: return "watch_glow_intensity";
         case ConfigKey::GodmodeEnabled: return "godmode_enabled";
+        case ConfigKey::PassthroughEnabled: return "passthrough_enabled";
+        case ConfigKey::EnvironmentEnabled: return "environment_enabled";
+        case ConfigKey::ProjectionMode: return "projection_mode";
+        case ConfigKey::DisplayBrightness: return "display_brightness";
+        case ConfigKey::OrientationLocked: return "orientation_locked";
         case ConfigKey::FirstRunComplete: return "first_run_complete";
     }
     return "unknown";
@@ -184,7 +193,7 @@ bool Config::Save(const std::string& path) const {
         LOGW("config: cannot write to %s", path.c_str());
         return false;
     }
-    fprintf(f, "# XR Wrist Display v0.5.0 configuration\n");
+    fprintf(f, "# XR Wrist Display v0.6.2 configuration\n");
     fprintf(f, "# Edit values, restart app to apply (most apply live).\n\n");
     std::lock_guard<std::mutex> lock(mutex_);
     for (int k = 0; k <= (int)ConfigKey::FirstRunComplete; ++k) {

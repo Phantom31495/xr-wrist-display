@@ -26,6 +26,7 @@ add_library(xrwrist SHARED
     notify.cpp
     environment.cpp
     menu.cpp
+    projection.cpp
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 
