@@ -1,0 +1,3 @@
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/RelWithDebInfo/6w6d5e3d/arm64-v8a/CMakeFiles/xrwrist.dir
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/RelWithDebInfo/6w6d5e3d/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/RelWithDebInfo/6w6d5e3d/arm64-v8a/CMakeFiles/rebuild_cache.dir

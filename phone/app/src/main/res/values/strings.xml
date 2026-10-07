@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">XR Wrist Phone</string>
+    <string name="touch_service_desc">Allows XR Wrist Display to inject touch input from your VR headset.</string>
+</resources>

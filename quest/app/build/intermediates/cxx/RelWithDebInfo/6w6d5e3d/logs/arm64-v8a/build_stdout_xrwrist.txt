@@ -1,0 +1,2 @@
+ninja: Entering directory `/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/RelWithDebInfo/6w6d5e3d/arm64-v8a'
+ninja: no work to do.

@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="/home/hatch/workspace/works/projects/xr-wrist-display/quest/app"
+    name=":app"
+    type="APP"
+    maven="xrwrist-quest:app:unspecified"
+    agpVersion="8.5.2"
+    buildFolder="build"
+    bootClassPath="/home/hatch/android/platforms/android-34/android.jar:/home/hatch/android/build-tools/34.0.0/core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-34"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

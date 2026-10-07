@@ -1,0 +1,11 @@
+buildscript {
+    repositories {
+        maven { url 'file:///home/hatch/tmp/maven-repo' }
+        // Fallback to remote (requires working proxy)
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.5.2'
+    }
+}

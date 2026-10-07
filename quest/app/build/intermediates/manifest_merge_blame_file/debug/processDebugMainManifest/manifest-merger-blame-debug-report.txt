@@ -1,0 +1,121 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.zachery.xrwrist.quest"
+4    android:versionCode="1"
+5    android:versionName="0.1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="29"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-feature
+11-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:4:5-5:55
+12        android:name="android.hardware.vr.headtracking"
+12-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:4:19-66
+13        android:required="true"
+13-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:5:9-32
+14        android:version="1" />
+14-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:5:33-52
+15    <uses-feature
+15-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:6:5-7:36
+16        android:name="oculus.software.handtracking"
+16-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:6:19-62
+17        android:required="false" />
+17-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:7:9-33
+18    <uses-feature
+18-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:8:5-9:36
+19        android:name="com.oculus.feature.PASSTHROUGH"
+19-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:8:19-64
+20        android:required="false" />
+20-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:9:9-33
+21
+22    <uses-permission android:name="android.permission.INTERNET" />
+22-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:11:5-67
+22-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:11:22-64
+23    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+23-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:12:5-79
+23-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:12:22-76
+24    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+24-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:13:5-76
+24-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:13:22-73
+25    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+25-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:14:5-86
+25-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:14:22-83
+26    <uses-permission android:name="org.khronos.openxr.permission.OPENXR" />
+26-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:13:3-74
+26-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:13:20-71
+27    <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
+27-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:14:3-81
+27-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:14:20-78
+28
+29    <queries>
+29-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:16:3-27:13
+30
+31        <!-- to talk to the broker -->
+32        <provider android:authorities="org.khronos.openxr.runtime_broker;org.khronos.openxr.system_runtime_broker" />
+32-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:18:5-114
+32-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:18:15-111
+33
+34        <!-- so client-side code of runtime/layers can talk to their service sides -->
+35        <intent>
+35-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:21:5-23:14
+36            <action android:name="org.khronos.openxr.OpenXRRuntimeService" />
+36-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:22:7-72
+36-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:22:15-69
+37        </intent>
+38        <intent>
+38-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:24:5-26:14
+39            <action android:name="org.khronos.openxr.OpenXRApiLayerService" />
+39-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:25:7-73
+39-->[org.khronos.openxr:openxr_loader_for_android:1.1.63] /root/.gradle/caches/8.10.2/transforms/1cb372ba5fbff22af0491f008e25f548/transformed/openxr_loader_for_android-1.1.63/AndroidManifest.xml:25:15-70
+40        </intent>
+41    </queries>
+42
+43    <application
+43-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:16:5-35:19
+44        android:allowBackup="false"
+44-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:19:9-36
+45        android:debuggable="true"
+46        android:extractNativeLibs="false"
+47        android:label="XR Wrist Display"
+47-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:17:9-41
+48        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+48-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:18:9-73
+49        <activity
+49-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:21:9-34:20
+50            android:name="android.app.NativeActivity"
+50-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:21:19-60
+51            android:configChanges="orientation|keyboardHidden|screenSize"
+51-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:23:13-74
+52            android:exported="true"
+52-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:26:13-36
+53            android:label="XR Wrist Display"
+53-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:22:13-45
+54            android:launchMode="singleTask"
+54-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:24:13-44
+55            android:screenOrientation="landscape" >
+55-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:25:13-50
+56            <meta-data
+56-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:27:13-28:43
+57                android:name="android.app.lib_name"
+57-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:27:24-59
+58                android:value="xrwrist" />
+58-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:28:17-40
+59
+60            <intent-filter>
+60-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:29:13-33:29
+61                <action android:name="android.intent.action.MAIN" />
+61-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:30:17-69
+61-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:30:25-66
+62
+63                <category android:name="android.intent.category.LAUNCHER" />
+63-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:31:17-77
+63-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:31:27-74
+64                <category android:name="com.oculus.intent.category.VR" />
+64-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:32:17-74
+64-->/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/AndroidManifest.xml:32:27-71
+65            </intent-filter>
+66        </activity>
+67    </application>
+68
+69</manifest>

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Minimal Gradle wrapper: uses the local Gradle 8.10.2 distribution.
+exec /home/hatch/gradle/gradle-8.10.2/bin/gradle "$@"

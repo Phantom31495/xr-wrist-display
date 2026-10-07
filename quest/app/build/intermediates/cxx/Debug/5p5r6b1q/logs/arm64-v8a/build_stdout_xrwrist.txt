@@ -1,0 +1,149 @@
+ninja: Entering directory `/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a'
+[1/8] Building CXX object CMakeFiles/xrwrist.dir/gl_render.cpp.o
+[2/8] Building CXX object CMakeFiles/xrwrist.dir/main.cpp.o
+[3/8] Building CXX object CMakeFiles/xrwrist.dir/video.cpp.o
+[4/8] Building CXX object CMakeFiles/xrwrist.dir/xr_core.cpp.o
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:134:77: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  134 |     XrLoaderInitInfoAndroidKHR initInfo{XR_TYPE_LOADER_INIT_INFO_ANDROID_KHR};
+      |                                                                             ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:160:88: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  160 |     std::vector<XrExtensionProperties> extProps(extCount, {XR_TYPE_EXTENSION_PROPERTIES});
+      |                                                                                        ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:180:57: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  180 |     XrInstanceCreateInfo ci{XR_TYPE_INSTANCE_CREATE_INFO};
+      |                                                         ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:186:52: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  186 |     XrSystemGetInfo sysInfo{XR_TYPE_SYSTEM_GET_INFO};
+      |                                                    ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:207:52: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  207 |         XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR};
+      |                                                    ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:225:91: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  225 |     XrGraphicsBindingOpenGLESAndroidKHR gfx{XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR};
+      |                                                                                           ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:232:56: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  232 |     XrSessionCreateInfo sci{XR_TYPE_SESSION_CREATE_INFO};
+      |                                                        ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:243:72: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  243 |     XrReferenceSpaceCreateInfo rsci{XR_TYPE_REFERENCE_SPACE_CREATE_INFO};
+      |                                                                        ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:257:44: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  257 |     views_.resize(viewCount_, {XR_TYPE_VIEW});
+      |                                            ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:282:84: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  282 |                                                    {XR_TYPE_VIEW_CONFIGURATION_VIEW});
+      |                                                                                    ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:292:64: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  292 |         XrSwapchainCreateInfo sci{XR_TYPE_SWAPCHAIN_CREATE_INFO};
+      |                                                                ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:307:74: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  307 |         sc.images.resize(imgCount, {XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR});
+      |                                                                          ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:353:69: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  353 |     XrPassthroughCreateInfoFB pci{XR_TYPE_PASSTHROUGH_CREATE_INFO_FB};
+      |                                                                     ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:358:81: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  358 |     XrPassthroughLayerCreateInfoFB plci{XR_TYPE_PASSTHROUGH_LAYER_CREATE_INFO_FB};
+      |                                                                                 ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:500:61: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  500 |             XrSessionBeginInfo bi{XR_TYPE_SESSION_BEGIN_INFO};
+      |                                                             ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:524:52: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  524 |     XrEventDataBuffer buf{XR_TYPE_EVENT_DATA_BUFFER};
+      |                                                    ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:538:41: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  538 |         buf = {XR_TYPE_EVENT_DATA_BUFFER};
+      |                                         ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:656:55: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  656 |     XrViewLocateInfo viewInfo{XR_TYPE_VIEW_LOCATE_INFO};
+      |                                                       ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:660:45: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  660 |     XrViewState viewState{XR_TYPE_VIEW_STATE};
+      |                                             ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:665:54: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  665 |         XrFrameEndInfo endInfo{XR_TYPE_FRAME_END_INFO};
+      |                                                      ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:674:51: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  674 |     XrSpaceLocation headLoc{XR_TYPE_SPACE_LOCATION};
+      |                                                   ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:711:80: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  711 |     XrCompositionLayerPassthroughFB pl{XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB};
+      |                                                                                ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:723:81: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  723 |         XrSwapchainImageAcquireInfo acquire{XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO};
+      |                                                                                 ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:725:72: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  725 |         XrSwapchainImageWaitInfo wait{XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};
+      |                                                                        ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:755:77: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  755 |         XrSwapchainImageReleaseInfo rel{XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};
+      |                                                                             ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:758:86: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  758 |         XrCompositionLayerProjectionView pv{XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW};
+      |                                                                                      ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:770:75: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  770 |     XrCompositionLayerProjection proj{XR_TYPE_COMPOSITION_LAYER_PROJECTION};
+      |                                                                           ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:776:50: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  776 |     XrFrameEndInfo endInfo{XR_TYPE_FRAME_END_INFO};
+      |                                                  ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:793:53: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  793 |     XrFrameWaitInfo waitInfo{XR_TYPE_FRAME_WAIT_INFO};
+      |                                                     ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:794:48: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  794 |     XrFrameState frameState{XR_TYPE_FRAME_STATE};
+      |                                                ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:797:56: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  797 |     XrFrameBeginInfo beginInfo{XR_TYPE_FRAME_BEGIN_INFO};
+      |                                                        ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp:805:54: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  805 |         XrFrameEndInfo endInfo{XR_TYPE_FRAME_END_INFO};
+      |                                                      ^
+32 warnings generated.
+[5/8] Building C object CMakeFiles/xrwrist.dir/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c.o
+[6/8] Building CXX object CMakeFiles/xrwrist.dir/input.cpp.o
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:26:47: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+   26 |     XrSpaceLocation loc{XR_TYPE_SPACE_LOCATION};
+      |                                               ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:41:64: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+   41 |     XrActionSetCreateInfo asInfo{XR_TYPE_ACTION_SET_CREATE_INFO};
+      |                                                                ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:53:57: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+   53 |         XrActionCreateInfo ai{XR_TYPE_ACTION_CREATE_INFO};
+      |                                                         ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:107:101: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  107 |         XrInteractionProfileSuggestedBinding suggested{XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING};
+      |                                                                                                     ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:117:69: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  117 |         XrActionSpaceCreateInfo sci{XR_TYPE_ACTION_SPACE_CREATE_INFO};
+      |                                                                     ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:128:81: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  128 |     XrSessionActionSetsAttachInfo attach{XR_TYPE_SESSION_ACTION_SETS_ATTACH_INFO};
+      |                                                                                 ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:152:79: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  152 |         XrHandTrackerCreateInfoEXT htInfo{XR_TYPE_HAND_TRACKER_CREATE_INFO_EXT};
+      |                                                                               ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:205:57: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  205 |     XrActionsSyncInfo syncInfo{XR_TYPE_ACTIONS_SYNC_INFO};
+      |                                                         ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:217:57: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  217 |         XrActionStateFloat st{XR_TYPE_ACTION_STATE_FLOAT};
+      |                                                         ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:218:62: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  218 |         XrActionStateGetInfo gi{XR_TYPE_ACTION_STATE_GET_INFO};
+      |                                                              ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:228:61: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  228 |         XrActionStateBoolean st{XR_TYPE_ACTION_STATE_BOOLEAN};
+      |                                                             ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:229:62: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  229 |         XrActionStateGetInfo gi{XR_TYPE_ACTION_STATE_GET_INFO};
+      |                                                              ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:245:81: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  245 |         XrHandJointsLocateInfoEXT locateInfo{XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT};
+      |                                                                                 ^
+/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp:248:75: warning: missing field 'next' initializer [-Wmissing-field-initializers]
+  248 |         XrHandJointLocationsEXT locations{XR_TYPE_HAND_JOINT_LOCATIONS_EXT};
+      |                                                                           ^
+14 warnings generated.
+[7/8] Building CXX object CMakeFiles/xrwrist.dir/net.cpp.o
+[8/8] Linking CXX shared library /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/intermediates/cxx/Debug/5p5r6b1q/obj/arm64-v8a/libxrwrist.so

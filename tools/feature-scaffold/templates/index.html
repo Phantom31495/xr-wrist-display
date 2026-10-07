@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XR Wrist — Feature Scaffold</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+  :root { --bg:#121212; --panel:#1e1e1e; --line:#2c2c2c; --fg:#e8e8e8;
+          --muted:#9a9a9a; --accent:#ffb74d; --ok:#7fd67f; --err:#ff8a80; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font-family:-apple-system,"Segoe UI",Roboto,sans-serif; font-size:14px; }
+  header { padding:14px 20px; border-bottom:1px solid var(--line);
+           display:flex; align-items:center; gap:12px; }
+  header h1 { font-size:17px; margin:0; font-weight:600; }
+  header .tag { color:var(--muted); font-size:12px; }
+  main { display:grid; grid-template-columns:340px 1fr; gap:0; height:calc(100vh - 53px); }
+  aside { border-right:1px solid var(--line); padding:18px; overflow-y:auto;
+          background:var(--panel); }
+  section { display:flex; flex-direction:column; min-width:0; }
+  label { display:block; font-size:12px; color:var(--muted); margin:14px 0 6px; }
+  label:first-child { margin-top:0; }
+  input[type=text], textarea, select {
+    width:100%; background:#0e0e0e; color:var(--fg); border:1px solid var(--line);
+    border-radius:6px; padding:9px 10px; font-size:13px; }
+  textarea { min-height:80px; resize:vertical; font-family:inherit; }
+  .row { display:flex; gap:8px; }
+  .row > div { flex:1; }
+  .btns { display:flex; gap:8px; margin-top:18px; flex-wrap:wrap; }
+  button { border:1px solid var(--line); border-radius:6px; padding:9px 14px;
+           font-size:13px; cursor:pointer; background:#2a2a2a; color:var(--fg); }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#1a1a1a;
+                   font-weight:600; }
+  button:disabled { opacity:.45; cursor:default; }
+  button:not(:disabled):hover { filter:brightness(1.12); }
+  .hint { font-size:12px; color:var(--muted); margin-top:14px; line-height:1.5; }
+  #tabs { display:flex; gap:4px; padding:10px 14px 0; border-bottom:1px solid var(--line);
+          overflow-x:auto; background:var(--panel); }
+  #tabs button { border:none; border-radius:6px 6px 0 0; background:transparent;
+                 color:var(--muted); white-space:nowrap; }
+  #tabs button.active { background:#0e0e0e; color:var(--accent); }
+  #view { flex:1; overflow:auto; padding:0; }
+  #view pre { margin:0; }
+  #view pre code { font-size:12.5px; line-height:1.55; padding:16px; display:block; }
+  #empty { color:var(--muted); padding:40px; text-align:center; }
+  #status { padding:8px 16px; font-size:12px; border-top:1px solid var(--line);
+            color:var(--muted); min-height:34px; }
+  #status.ok { color:var(--ok); } #status.err { color:var(--err); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Feature Scaffold</h1>
+  <span class="tag">XR Wrist Display · generates council-grade boilerplate</span>
+</header>
+<main>
+  <aside>
+    <label for="fname">Feature name</label>
+    <input type="text" id="fname" placeholder="e.g. VoiceCommands" value="TestFeature">
+    <div class="row">
+      <div>
+        <label for="target">Target</label>
+        <select id="target">
+          <option value="quest">Quest (C++)</option>
+          <option value="phone">Phone (Kotlin)</option>
+          <option value="both">Both</option>
+        </select>
+      </div>
+      <div>
+        <label for="ftype">Type</label>
+        <select id="ftype">
+          <option value="renderer">Renderer</option>
+          <option value="input">Input Handler</option>
+          <option value="network">Network Module</option>
+          <option value="panel">UI Panel</option>
+          <option value="devtool" selected>DevTool</option>
+          <option value="settings">Settings</option>
+        </select>
+      </div>
+    </div>
+    <label for="desc">Description</label>
+    <textarea id="desc" placeholder="What does this feature do?"></textarea>
+    <div class="btns">
+      <button class="primary" id="gen">Generate</button>
+      <button id="dl" disabled>Download .zip</button>
+      <button id="cp" disabled>Copy to project</button>
+    </div>
+    <div class="hint">
+      Generated code follows project conventions (namespaces, <code>trailingUnderscore_</code>,
+      no magic numbers), includes the council checklist, TODO markers, and
+      human-centered notes. “Copy to project” writes only to allow-listed
+      source dirs and never overwrites existing files.
+    </div>
+  </aside>
+  <section>
+    <div id="tabs"></div>
+    <div id="view"><div id="empty">Configure a feature on the left, then Generate.</div></div>
+    <div id="status"></div>
+  </section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script>
+let files = [];
+const $ = id => document.getElementById(id);
+const langOf = l => l === 'cpp' ? 'cpp' : (l === 'kotlin' ? 'kotlin' : 'markdown');
+
+function setStatus(msg, cls) {
+  const s = $('status'); s.textContent = msg; s.className = cls || '';
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderTabs() {
+  const t = $('tabs'); t.innerHTML = '';
+  files.forEach((f, i) => {
+    const b = document.createElement('button');
+    b.textContent = f.path.split('/').pop();
+    b.title = f.path;
+    if (i === 0) b.classList.add('active');
+    b.onclick = () => { [...t.children].forEach(c => c.classList.remove('active'));
+                        b.classList.add('active'); renderFile(i); };
+    t.appendChild(b);
+  });
+  if (files.length) renderFile(0);
+}
+function renderFile(i) {
+  const f = files[i];
+  const v = $('view');
+  v.innerHTML = '<pre><code id="code"></code></pre>';
+  const code = $('code');
+  code.textContent = f.content;
+  code.className = 'language-' + langOf(f.language);
+  try { if (window.hljs) hljs.highlightElement(code); }
+  catch (e) { /* graceful fallback: plain pre */ }
+}
+
+async function post(url, body) {
+  const r = await fetch(url, { method:'POST',
+    headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  if (!r.ok) { const j = await r.json().catch(()=>({})); throw new Error(j.error || r.statusText); }
+  return r;
+}
+function payload() {
+  return { name: $('fname').value, target: $('target').value,
+           ftype: $('ftype').value, description: $('desc').value };
+}
+
+$('gen').onclick = async () => {
+  setStatus('Generating…');
+  try {
+    const j = await (await post('/api/generate', payload())).json();
+    files = j.files;
+    renderTabs();
+    $('dl').disabled = $('cp').disabled = !files.length;
+    setStatus(`Generated ${files.length} file(s) for “${j.feature}”.`, 'ok');
+  } catch (e) { setStatus('Error: ' + e.message, 'err'); }
+};
+$('dl').onclick = async () => {
+  setStatus('Building zip…');
+  try {
+    const r = await post('/api/download', payload());
+    const blob = await r.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = $('fname').value.toLowerCase() + '_scaffold.zip';
+    a.click(); URL.revokeObjectURL(a.href);
+    setStatus('Downloaded.', 'ok');
+  } catch (e) { setStatus('Error: ' + e.message, 'err'); }
+};
+$('cp').onclick = async () => {
+  if (!confirm('Write generated files into the project tree?\nExisting files will NOT be overwritten.')) return;
+  setStatus('Copying…');
+  try {
+    const j = await (await post('/api/copy', payload())).json();
+    const msg = `Wrote ${j.written.length} file(s).` +
+      (j.skipped.length ? ` Skipped: ${j.skipped.join(', ')}` : '');
+    setStatus(msg, j.written.length ? 'ok' : 'err');
+  } catch (e) { setStatus('Error: ' + e.message, 'err'); }
+};
+</script>
+</body>
+</html>

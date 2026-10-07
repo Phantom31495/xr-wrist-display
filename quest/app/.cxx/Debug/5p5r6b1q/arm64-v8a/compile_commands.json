@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -frtti -fexceptions -fno-limit-debug-info  -std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/main.cpp.o -c /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/main.cpp",
+  "file": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/main.cpp",
+  "output": "CMakeFiles/xrwrist.dir/main.cpp.o"
+},
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -frtti -fexceptions -fno-limit-debug-info  -std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/xr_core.cpp.o -c /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp",
+  "file": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/xr_core.cpp",
+  "output": "CMakeFiles/xrwrist.dir/xr_core.cpp.o"
+},
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -frtti -fexceptions -fno-limit-debug-info  -std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/gl_render.cpp.o -c /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/gl_render.cpp",
+  "file": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/gl_render.cpp",
+  "output": "CMakeFiles/xrwrist.dir/gl_render.cpp.o"
+},
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -frtti -fexceptions -fno-limit-debug-info  -std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/video.cpp.o -c /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/video.cpp",
+  "file": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/video.cpp",
+  "output": "CMakeFiles/xrwrist.dir/video.cpp.o"
+},
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -frtti -fexceptions -fno-limit-debug-info  -std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/net.cpp.o -c /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/net.cpp",
+  "file": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/net.cpp",
+  "output": "CMakeFiles/xrwrist.dir/net.cpp.o"
+},
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -frtti -fexceptions -fno-limit-debug-info  -std=c++17 -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/input.cpp.o -c /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp",
+  "file": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/input.cpp",
+  "output": "CMakeFiles/xrwrist.dir/input.cpp.o"
+},
+{
+  "directory": "/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/.cxx/Debug/5p5r6b1q/arm64-v8a",
+  "command": "/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=aarch64-none-linux-android29 --sysroot=/home/hatch/android/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dxrwrist_EXPORTS -I/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/cpp/third_party/openxr/include -I/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -Wall -Wextra -Wno-unused-parameter -O0 -g -o CMakeFiles/xrwrist.dir/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c.o -c /home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c",
+  "file": "/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c",
+  "output": "CMakeFiles/xrwrist.dir/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c.o"
+}
+]

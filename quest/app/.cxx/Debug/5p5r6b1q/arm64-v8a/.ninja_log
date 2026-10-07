@@ -1,0 +1,17 @@
+# ninja log v5
+325	5117	1791318289639496147	CMakeFiles/xrwrist.dir/main.cpp.o	47837d182d401695
+10	1318	1791314846726451989	CMakeFiles/xrwrist.dir/input.cpp.o	b8452b32b0e263a0
+3277	5497	1791314681958697055	CMakeFiles/xrwrist.dir/net.cpp.o	a374e9e8ecb1d7ca
+11	236	1791314845650530769	CMakeFiles/xrwrist.dir/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c.o	30f241207a839bdd
+327	6341	1791318290871548078	CMakeFiles/xrwrist.dir/xr_core.cpp.o	c3eed961fffa04f7
+6341	7187	1791318291756520000	/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/intermediates/cxx/Debug/5p5r6b1q/obj/arm64-v8a/libxrwrist.so	ceb1577ff6826858
+28	3715	1791314729885149182	CMakeFiles/xrwrist.dir/video.cpp.o	a4aff7b9e6573248
+2	658	1791314677123060515	CMakeFiles/xrwrist.dir/gl_render.cpp.o	6c0dd9d455d6c148
+339	1906	1791320346028497300	CMakeFiles/xrwrist.dir/gl_render.cpp.o	ae71ea8947b19a3d
+333	4445	1791320348533513573	CMakeFiles/xrwrist.dir/main.cpp.o	14ddf986b7a714b6
+1907	4737	1791320348857394013	CMakeFiles/xrwrist.dir/video.cpp.o	dacd97560c9fcfff
+338	5836	1791320349934592575	CMakeFiles/xrwrist.dir/xr_core.cpp.o	83c1fceace74176e
+5840	6176	1791320350293218752	CMakeFiles/xrwrist.dir/home/hatch/android/ndk/27.2.12479018/sources/android/native_app_glue/android_native_app_glue.c.o	cbe52fc6c402dab2
+4738	6866	1791320350978977530	CMakeFiles/xrwrist.dir/input.cpp.o	25a98adccacfd6d7
+4447	7246	1791320351368319957	CMakeFiles/xrwrist.dir/net.cpp.o	aa1b7a73226e69cd
+7246	7602	1791320351739513563	/home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/intermediates/cxx/Debug/5p5r6b1q/obj/arm64-v8a/libxrwrist.so	ceb1577ff6826858

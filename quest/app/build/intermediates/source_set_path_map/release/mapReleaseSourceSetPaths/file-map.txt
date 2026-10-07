@@ -1,0 +1,7 @@
+com.zachery.xrwrist.quest.app-pngs-0 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/generated/res/pngs/release
+com.zachery.xrwrist.quest.app-resValues-1 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/generated/res/resValues/release
+com.zachery.xrwrist.quest.app-packageReleaseResources-2 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/intermediates/incremental/release/packageReleaseResources/merged.dir
+com.zachery.xrwrist.quest.app-packageReleaseResources-3 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
+com.zachery.xrwrist.quest.app-release-4 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/build/intermediates/merged_res/release/mergeReleaseResources
+com.zachery.xrwrist.quest.app-main-5 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/main/res
+com.zachery.xrwrist.quest.app-release-6 /home/hatch/workspace/works/projects/xr-wrist-display/quest/app/src/release/res
