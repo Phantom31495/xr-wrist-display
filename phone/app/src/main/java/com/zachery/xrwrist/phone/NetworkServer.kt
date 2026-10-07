@@ -177,6 +177,23 @@ class NetworkServer(
         }
     }
 
+    /**
+     * scrcpy tunes every socket for latency: TCP_NODELAY disables Nagle's
+     * algorithm so small control packets and NAL headers are sent
+     * immediately instead of being coalesced. This is one of the main
+     * reasons scrcpy feels responsive.
+     */
+    private fun tuneSocket(sock: Socket) {
+        try {
+            sock.tcpNoDelay = true
+            // Generous send buffer so the encoder thread never blocks on
+            // a slow reader; drops are handled by dead-client detection.
+            sock.sendBufferSize = sock.sendBufferSize.coerceAtLeast(256 * 1024)
+        } catch (e: Exception) {
+            Log.w(TAG, "socket tuning failed", e)
+        }
+    }
+
     private fun videoAcceptLoop() {
         try {
             val server = ServerSocket(PORT_VIDEO)
@@ -184,6 +201,7 @@ class NetworkServer(
             while (running.get()) {
                 try {
                     val client = server.accept()
+                    tuneSocket(client)
                     Log.i(TAG, "video client: ${client.inetAddress.hostAddress}")
                     Thread({ handleVideoClient(client) },
                         "XRWrist-VideoClient").start()
@@ -244,6 +262,7 @@ class NetworkServer(
             while (running.get()) {
                 try {
                     val client = server.accept()
+                    tuneSocket(client)
                     Log.i(TAG, "control client: ${client.inetAddress.hostAddress}")
                     Thread({ handleControlClient(client) },
                         "XRWrist-ControlClient").start()
