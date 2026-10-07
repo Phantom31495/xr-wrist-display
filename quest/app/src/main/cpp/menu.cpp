@@ -245,7 +245,7 @@ void VrMenu::RebuildRows() {
                        (actions_.isStreaming ? (actions_.isStreaming()
                                                    ? "Stop"
                                                    : "Start")
-                                            : "?");
+                                            : "Start");
             },
             [this]() {
                 if (actions_.toggleStream) actions_.toggleStream();
@@ -267,7 +267,7 @@ void VrMenu::RebuildRows() {
             [this]() {
                 if (actions_.togglePassthrough) actions_.togglePassthrough();
             }});
-        rows_.push_back(Row{"Diagnostics", {},
+        rows_.push_back(Row{"Tech info", {},
                             [this]() {
                                 if (actions_.toggleDiagnostics)
                                     actions_.toggleDiagnostics();
@@ -278,36 +278,42 @@ void VrMenu::RebuildRows() {
                                 RebuildRows();
                             }});
     } else if (page_ == Page::Settings) {
+        // v0.6.1: plain-language labels. Every row says what it does;
+        // current values shown in familiar units (cm, seconds).
         rows_.push_back(Row{
             "", [&cfg]() {
-                char b[48];
-                snprintf(b, sizeof(b), "Display size: %.2fm",
-                         cfg.GetFloat(ConfigKey::EngagedSizeM));
+                char b[64];
+                snprintf(b, sizeof(b), "Bigger display (now %.0f cm)",
+                         cfg.GetFloat(ConfigKey::EngagedSizeM) * 100.0f);
                 return std::string(b);
             },
             [&cfg, kSizeStep]() {
                 float v = cfg.GetFloat(ConfigKey::EngagedSizeM) + kSizeStep;
                 v = std::min(0.60f, std::max(0.30f, v));
                 cfg.SetFloat(ConfigKey::EngagedSizeM, v);
-                Notify::Instance().Info("Display size updated");
+                char b[64];
+                snprintf(b, sizeof(b), "Display size: %.0f cm", v * 100.0f);
+                Notify::Instance().Info(b);
             }});
         rows_.push_back(Row{
             "", [&cfg]() {
-                char b[48];
-                snprintf(b, sizeof(b), "Display size - : %.2fm",
-                         cfg.GetFloat(ConfigKey::EngagedSizeM));
+                char b[64];
+                snprintf(b, sizeof(b), "Smaller display (now %.0f cm)",
+                         cfg.GetFloat(ConfigKey::EngagedSizeM) * 100.0f);
                 return std::string(b);
             },
             [&cfg, kSizeStep]() {
                 float v = cfg.GetFloat(ConfigKey::EngagedSizeM) - kSizeStep;
                 v = std::min(0.60f, std::max(0.30f, v));
                 cfg.SetFloat(ConfigKey::EngagedSizeM, v);
-                Notify::Instance().Info("Display size updated");
+                char b[64];
+                snprintf(b, sizeof(b), "Display size: %.0f cm", v * 100.0f);
+                Notify::Instance().Info(b);
             }});
         rows_.push_back(Row{
             "", [&cfg]() {
-                char b[48];
-                snprintf(b, sizeof(b), "Gaze dwell + : %.2fs",
+                char b[64];
+                snprintf(b, sizeof(b), "Look longer to open (now %.1fs)",
                          cfg.GetFloat(ConfigKey::GazeDwellSec));
                 return std::string(b);
             },
@@ -315,11 +321,14 @@ void VrMenu::RebuildRows() {
                 float v = cfg.GetFloat(ConfigKey::GazeDwellSec) + kDwellStep;
                 v = std::min(3.0f, std::max(0.5f, v));
                 cfg.SetFloat(ConfigKey::GazeDwellSec, v);
+                char b[64];
+                snprintf(b, sizeof(b), "Look time: %.1f seconds", v);
+                Notify::Instance().Info(b);
             }});
         rows_.push_back(Row{
             "", [&cfg]() {
-                char b[48];
-                snprintf(b, sizeof(b), "Gaze dwell - : %.2fs",
+                char b[64];
+                snprintf(b, sizeof(b), "Look quicker to open (now %.1fs)",
                          cfg.GetFloat(ConfigKey::GazeDwellSec));
                 return std::string(b);
             },
@@ -327,10 +336,13 @@ void VrMenu::RebuildRows() {
                 float v = cfg.GetFloat(ConfigKey::GazeDwellSec) - kDwellStep;
                 v = std::min(3.0f, std::max(0.5f, v));
                 cfg.SetFloat(ConfigKey::GazeDwellSec, v);
+                char b[64];
+                snprintf(b, sizeof(b), "Look time: %.1f seconds", v);
+                Notify::Instance().Info(b);
             }});
         rows_.push_back(Row{
             "", [&cfg]() {
-                return std::string("Voice: ") +
+                return std::string("Voice commands: ") +
                        (cfg.GetBool(ConfigKey::VoiceEnabled) ? "On" : "Off");
             },
             [&cfg]() {
@@ -339,7 +351,7 @@ void VrMenu::RebuildRows() {
             }});
         rows_.push_back(Row{
             "", [&cfg]() {
-                return std::string("Auto-transition: ") +
+                return std::string("Auto-move display: ") +
                        (cfg.GetBool(ConfigKey::AutoTransition) ? "On" : "Off");
             },
             [&cfg]() {
@@ -348,7 +360,7 @@ void VrMenu::RebuildRows() {
             }});
         rows_.push_back(Row{
             "", [&cfg]() {
-                return std::string("Avatar hands: ") +
+                return std::string("Hand avatars: ") +
                        (cfg.GetBool(ConfigKey::AvatarEnabled) ? "On" : "Off");
             },
             [&cfg]() {
@@ -366,8 +378,8 @@ void VrMenu::RebuildRows() {
         rows_.push_back(
             Row{"XR Wrist Display " + ver, {}, {}, false});
         rows_.push_back(
-            Row{"Native OpenXR client", {}, {}, false});
-        rows_.push_back(Row{"github.com/Phantom31495", {}, {}, false});
+            Row{"Built with OpenXR", {}, {}, false});
+        rows_.push_back(Row{"github.com/Phantom31495/", {}, {}, false});
         rows_.push_back(Row{"xr-wrist-display", {}, {}, false});
         rows_.push_back(Row{"< Back", {},
                             [this]() {
@@ -398,7 +410,7 @@ void VrMenu::RebuildRows() {
     headerOverlay_.Clear();
     headerOverlay_.Printf("%s", PageTitleStr((int)page_));
     footerOverlay_.Clear();
-    footerOverlay_.Printf("Y: close   Trigger / pinch: select");
+    footerOverlay_.Printf("Y closes - Trigger or pinch selects");
 }
 
 void VrMenu::ComputePanelPose(const XrInput::Pose& head) {

@@ -583,7 +583,8 @@ void XrApp::StartNetwork() {
             return;
         }
 
-        Notify::Instance().Info("Phone found", phoneIp_.c_str());
+        Notify::Instance().Info("Phone found",
+                                ("Connected to " + phoneIp_).c_str());
 
         // Control channel first (touch input).
         controlClient_.Start(phoneIp_);
@@ -632,7 +633,7 @@ bool XrApp::Init(android_app* app) {
         if (!cfg.GetBool(ConfigKey::FirstRunComplete)) {
             Notify::Instance().Info(
                 "Welcome to XR Wrist Display",
-                "Gaze at your wrist to engage. Tap B for help.");
+                "Look at your wrist to open it. Press B for tech info.");
             // Don't mark complete yet — wait until they've engaged once.
         }
     }
@@ -697,7 +698,7 @@ bool XrApp::Init(android_app* app) {
                 on ? "Passthrough on" : "VR room on",
                 on ? "Mixed reality" : "Virtual environment");
         };
-        actions.versionString = []() { return std::string("v0.6.0"); };
+        actions.versionString = []() { return std::string("v0.6.1"); };
         if (!menu_.Init(actions)) {
             LOGW("v0.6.0: menu init failed (non-fatal)");
         }
@@ -916,20 +917,37 @@ void XrApp::ComputeDiagPanelPose(const XrInput::Pose& head, Vec3& outPos,
     outQuat = BillboardQuat(head.pos, outPos);
 }
 
+// v0.6.1: human-readable XR session state name (was a raw enum number).
+static const char* SessionStateName(XrSessionState s) {
+    switch (s) {
+        case XR_SESSION_STATE_IDLE: return "idle";
+        case XR_SESSION_STATE_READY: return "ready";
+        case XR_SESSION_STATE_SYNCHRONIZED: return "synced";
+        case XR_SESSION_STATE_VISIBLE: return "visible";
+        case XR_SESSION_STATE_FOCUSED: return "focused";
+        case XR_SESSION_STATE_STOPPING: return "stopping";
+        case XR_SESSION_STATE_LOSS_PENDING: return "lost";
+        case XR_SESSION_STATE_EXITING: return "exiting";
+        default: return "unknown";
+    }
+}
+
 void XrApp::BuildDiagContent() {
+    // v0.6.1: tech panel keeps its depth but speaks plainly — no raw
+    // enum numbers, no cryptic abbreviations, on/off instead of 1/0.
     auto& o = diagOverlay_;
     o.Clear();
-    o.Printf("XR WRIST v0.5.0 // GODMODE CONSOLE");
+    o.Printf("XR WRIST // TECH INFO");
     o.Printf("%5.1f fps  %5.2fms  worst %5.2fms",
              frameDiag_.fps(), frameDiag_.frameMsAvg(),
              frameDiag_.frameMsWorst());
-    o.Printf("session %d  video %dx%d %s  phone %s", (int)sessionState_,
-             videoW_, videoH_, videoReady_ ? "RDY" : "...",
+    o.Printf("session %s  video %dx%d %s  phone %s",
+             SessionStateName(sessionState_), videoW_, videoH_,
+             videoReady_ ? "ready" : "waiting",
              phoneIp_.empty() ? "(none)" : phoneIp_.c_str());
-    // v0.5.0: hand interaction status.
-    o.Printf("hand-interaction %s  poke %s  pinch L:%.2f R:%.2f",
-             input_.HandInteractionAvailable() ? "ON" : "off",
-             input_.HandInteractionAvailable() ? "canonical" : "joints",
+    o.Printf("hand tracking %s  touch %s  pinch L:%.2f R:%.2f",
+             input_.HandInteractionAvailable() ? "on" : "off",
+             input_.HandInteractionAvailable() ? "precise" : "fallback",
              input_.PinchValue(false), input_.PinchValue(true));
     std::string is;
     devtools::InputSnapshot::Capture(input_).AppendTo(is);
@@ -944,54 +962,50 @@ void XrApp::BuildDiagContent() {
         if (e == std::string::npos) break;
         start = e + 1;
     }
-    o.Printf("avatar draws %u tris %u dbg %d", lastAvatarStats_.drawCalls,
-             lastAvatarStats_.triangles, (int)avatar_.GetDebugMode());
-    // v0.5.0 state (SG-1: world-lock on engage).
+    o.Printf("avatar: %u draws, %u tris", lastAvatarStats_.drawCalls,
+             lastAvatarStats_.triangles);
     const char* zoomName = zoom_ == DisplayZoom::GLANCE ? "glance"
-        : zoom_ == DisplayZoom::EXPANDING ? "expanding"
-        : zoom_ == DisplayZoom::ENGAGED ? "engaged" : "shrinking";
-    const char* anchorName = engageDetached_ ? "ENGAGE-LOCK"
-        : (detachT_ < 0.5f ? "wrist" : "world");
-    o.Printf("v0.5.0 zoom %s (%.2f) anchor %s detach %.2f->%.0f",
-             zoomName, zoomT_, anchorName, detachT_, detachTarget_);
-    o.Printf("auto %d glow %.2f finger %s voice %s",
-             autoTransition_ ? 1 : 0, watchGlow_,
-             fingerTouchDown_ ? "DOWN" : "up",
-             voiceListening_ ? "LISTEN" : "idle");
+        : zoom_ == DisplayZoom::EXPANDING ? "opening"
+        : zoom_ == DisplayZoom::ENGAGED ? "open" : "closing";
+    const char* anchorName = engageDetached_ ? "locked-in-front"
+        : (detachT_ < 0.5f ? "wrist" : "floating");
+    o.Printf("display %s (%d%%) at %s", zoomName, (int)(zoomT_ * 100.0f),
+             anchorName);
+    o.Printf("auto-move %s  finger %s  voice %s",
+             autoTransition_ ? "on" : "off",
+             fingerTouchDown_ ? "touching" : "up",
+             voiceListening_ ? "listening" : "idle");
     if (!lastHeard_.empty())
-        o.Printf("heard: %s", lastHeard_.c_str());
+        o.Printf("heard: \"%s\"", lastHeard_.c_str());
     if (netProbe_.ScanDone()) {
         auto hosts = netProbe_.TakeResults();
-        o.Printf("lan: %d host(s)", (int)hosts.size());
+        o.Printf("network: %d phone(s) found", (int)hosts.size());
         for (auto& h : hosts) {
-            o.Printf(" %s %lldus", h.ip.c_str(), (long long)h.latencyUs);
-            o.Printf("  v:%s c:%s",
-                     h.video.ok ? "OK" : h.video.error.c_str(),
-                     h.control.ok ? "OK" : h.control.error.c_str());
+            o.Printf(" %s (%.1f ms)", h.ip.c_str(), h.latencyUs / 1000.0);
+            o.Printf("  video: %s  control: %s",
+                     h.video.ok ? "ok" : h.video.error.c_str(),
+                     h.control.ok ? "ok" : h.control.error.c_str());
         }
     } else {
-        o.Printf("lan scan...");
+        o.Printf("scanning network...");
     }
-    // v0.5.0: Godmode command reference.
-    o.Printf("--- COMMANDS ---");
-    o.Printf("[B]diag [A]wireframe [X+Y]wrist/world");
-    o.Printf("[Y-hold]voice [gaze]engage [pinch]click");
-    o.Printf("v0.5.0: engage=world-lock (SG-1)");
-    // v0.5.0: live config values (production settings).
+    o.Printf("--- CONTROLS ---");
+    o.Printf("[B] tech info  [A] wireframe  [X+Y] wrist/float");
+    o.Printf("[hold Y] voice  [look] open  [pinch] click");
     auto& cfg = Config::Instance();
-    o.Printf("--- CONFIG ---");
-    o.Printf("dwell %.1fs lost %.1fs raise %.1fs",
+    o.Printf("--- SETTINGS ---");
+    o.Printf("look-open %.1fs  look-away %.1fs  raise %.1fs",
              cfg.GetFloat(ConfigKey::GazeDwellSec),
              cfg.GetFloat(ConfigKey::GazeLostSec),
              cfg.GetFloat(ConfigKey::WristRaiseSec));
-    o.Printf("touch %.0fmm pinch %.2f world %.2fm",
+    o.Printf("touch-dist %.0fmm  pinch %.2f  float-dist %.2fm",
              cfg.GetFloat(ConfigKey::TouchDistanceM) * 1000.0f,
              cfg.GetFloat(ConfigKey::PinchThreshold),
              cfg.GetFloat(ConfigKey::WorldDistanceM));
-    o.Printf("auto %d voice %d avatar %d",
-             cfg.GetBool(ConfigKey::AutoTransition) ? 1 : 0,
-             cfg.GetBool(ConfigKey::VoiceEnabled) ? 1 : 0,
-             cfg.GetBool(ConfigKey::AvatarEnabled) ? 1 : 0);
+    o.Printf("auto-move %s  voice %s  hands %s",
+             cfg.GetBool(ConfigKey::AutoTransition) ? "on" : "off",
+             cfg.GetBool(ConfigKey::VoiceEnabled) ? "on" : "off",
+             cfg.GetBool(ConfigKey::AvatarEnabled) ? "on" : "off");
 }
 
 void XrApp::HandleTouch(const XrInput::Pose& head, const Vec3& quadPos,
@@ -1087,7 +1101,8 @@ void XrApp::UpdateDynamicZoom(const XrInput::Pose& head, const Vec3& dispPos,
                         cfg.SetBool(ConfigKey::FirstRunComplete, true);
                         Notify::Instance().Info(
                             "You're in!",
-                            "Pinch to click. Hold Y for voice. B for help.");
+                            "Pinch fingers to click. Hold Y, then speak. "
+                            "B shows tech info.");
                     }
                     // SG-1: engaging means interacting — the panel must be
                     // world-locked, not wrist-anchored. Start the glide now
@@ -1099,8 +1114,8 @@ void XrApp::UpdateDynamicZoom(const XrInput::Pose& head, const Vec3& dispPos,
                         watchGlow_ = 0.0f;
                         LOGI("v0.5.0: engage -> world-lock (SG-1)");
                         Notify::Instance().Info(
-                            "Display engaged",
-                            "Panel moved to world-locked position");
+                            "Display ready",
+                            "Floating in front of you now");
                     }
                 }
             } else {
@@ -1294,39 +1309,55 @@ static std::string ToLowerStr(std::string s) {
 
 // v0.4.0: tiny command grammar over the recognized utterance.
 void XrApp::ExecuteVoiceCommand(const std::string& cmd) {
+    // v0.6.1: every recognized command shows a toast so the user knows
+    // it worked; unrecognized input gets a plain-language hint.
     std::string c = ToLowerStr(cmd);
     auto has = [&](const char* w) { return c.find(w) != std::string::npos; };
+    auto heard = [&](const char* what) {
+        Notify::Instance().Info("Voice command", what);
+    };
     if (has("expand") || has("bigger") || has("zoom in")) {
         if (zoom_ == DisplayZoom::GLANCE) zoom_ = DisplayZoom::EXPANDING;
+        heard("Making the display bigger");
         LOGW("v0.4.0: voice -> expand");
     } else if (has("shrink") || has("small") || has("zoom out") ||
                has("collapse")) {
         if (zoom_ == DisplayZoom::ENGAGED) zoom_ = DisplayZoom::SHRINKING;
+        heard("Making the display smaller");
         LOGW("v0.4.0: voice -> shrink");
     } else if (has("wrist")) {
         detachTarget_ = 0.0f;
+        heard("Display back on your wrist");
         LOGW("v0.4.0: voice -> wrist mode");
     } else if (has("fix") || has("float") || has("detach") ||
                has("move here")) {
         detachTarget_ = 1.0f;
+        heard("Display floating here");
         LOGW("v0.4.0: voice -> fixed mode");
     } else if (has("auto move on") || has("auto on")) {
         autoTransition_ = true;
+        heard("Auto-move turned on");
         LOGW("v0.4.0: voice -> auto-transition on");
     } else if (has("auto move off") || has("auto off")) {
         autoTransition_ = false;
+        heard("Auto-move turned off");
         LOGW("v0.4.0: voice -> auto-transition off");
-    } else if (has("diagnostics") || has("godmode") || has("debug info")) {
+    } else if (has("diagnostics") || has("godmode") || has("debug info") ||
+               has("tech info")) {
         // v0.5.0: toggle the Godmode console via voice.
         showDiag_ = !showDiag_;
         if (showDiag_) netProbe_.StartScan(1500);
+        heard(showDiag_ ? "Tech info shown" : "Tech info hidden");
         LOGW("v0.5.0: voice -> godmode %s", showDiag_ ? "on" : "off");
     } else if (has("world lock") || has("lock here")) {
         // v0.5.0: force world-lock at the current panel position.
         detachTarget_ = 1.0f;
         engageDetached_ = false;  // manual, not engage-caused
+        heard("Display locked in place here");
         LOGW("v0.5.0: voice -> world lock");
     } else {
+        Notify::Instance().Info("Didn't catch that",
+                                "Try 'bigger', 'smaller', or 'wrist mode'");
         LOGW("v0.5.0: voice command not recognized: \"%s\"", cmd.c_str());
     }
 }
@@ -1646,7 +1677,7 @@ void XrApp::RenderLayer(XrTime predictedTime) {
         // v0.4.0: voice mic pill while listening (Meta-style indicator).
         if (voiceListening_ && head.valid) {
             voiceOverlay_.Clear();
-            voiceOverlay_.Printf("MIC listening - speak command");
+            voiceOverlay_.Printf("Listening... speak a command");
             Vec3 fwd = head.quat.rotate(Vec3(0, 0, -1));
             Vec3 up = head.quat.rotate(Vec3(0, 1, 0));
             Vec3 pillPos = head.pos + fwd * 0.9f + up * 0.18f;
@@ -1674,7 +1705,8 @@ void XrApp::RenderLayer(XrTime predictedTime) {
                 Vec3 toastPos = head.pos + fwd * 0.9f + up * 0.05f;
                 Mat4 toastModel = Mat4::FromPose(
                     toastPos, BillboardQuat(head.pos, toastPos));
-                notifyOverlay_.Draw(viewProj, toastModel, 0.35f);
+                // v0.6.1: wider panel = larger glyphs, readable at 0.9m.
+                notifyOverlay_.Draw(viewProj, toastModel, 0.42f);
             }
         }
 
