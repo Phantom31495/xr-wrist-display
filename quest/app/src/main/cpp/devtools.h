@@ -164,6 +164,16 @@ public:
     void Printf(const char* fmt, ...);
     bool HasContent() const { return !text_.empty(); }
 
+    // v0.6.0: menu styling — override the background plate color, or
+    // disable the plate entirely (for text drawn over custom plates).
+    void SetBackgroundColor(float r, float g, float b, float a) {
+        bgColor_[0] = r;
+        bgColor_[1] = g;
+        bgColor_[2] = b;
+        bgColor_[3] = a;
+    }
+    void SetBackgroundEnabled(bool enabled) { bgEnabled_ = enabled; }
+
     // panelW: panel width in meters (height follows the text aspect).
     // Call every frame the panel should be visible.
     void Draw(const Mat4& viewProj, const Mat4& panelModel, float panelW);
@@ -188,6 +198,9 @@ private:
     bool dirty_ = true;
     int quadCount_ = 0;
     bool ok_ = false;
+    // v0.6.0: background plate styling (defaults = original look).
+    float bgColor_[4] = {0.02f, 0.03f, 0.04f, 0.72f};
+    bool bgEnabled_ = true;
 };
 
 }  // namespace devtools

@@ -3,6 +3,7 @@ package com.zachery.xrwrist.phone
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -241,7 +242,7 @@ object ViewInspector {
             sb.append("requested (${perms.size}):\n")
             perms.forEachIndexed { i, p ->
                 val granted = i < flags.size &&
-                    (flags[i] and PackageManager.REQUESTED_PERMISSION_GRANTED) != 0
+                    (flags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
                 sb.append("  ${if (granted) "✓" else "✗"} ${p.substringAfterLast('.')}\n")
             }
         } catch (e: Exception) {

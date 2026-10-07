@@ -523,8 +523,36 @@ bool XrApp::InitPassthrough() {
     return true;
 }
 
+// v0.6.0: stop the stream (menu toggle). Bumps the network generation so
+// a discovery thread still in flight aborts instead of connecting late.
+void XrApp::StopNetwork() {
+    netGen_++;
+    if (screenOffSent_) {
+        controlClient_.SendCmd("screen_on");
+        screenOffSent_ = false;
+    }
+    controlClient_.Stop();
+    videoClient_.Stop();
+    videoReady_ = false;
+    phoneIp_.clear();
+    Notify::Instance().Info("Stream stopped", "Menu > Stream to restart");
+    LOGI("v0.6.0: network stopped by user");
+}
+
+bool XrApp::IsStreaming() const {
+    return controlClient_.IsRunning() || videoClient_.IsRunning();
+}
+
+// v0.6.0: godmode overlay toggle, shared by the B button and the menu.
+void XrApp::ToggleDiagnostics() {
+    showDiag_ = !showDiag_;
+    if (showDiag_) netProbe_.StartScan(1500);
+    LOGW("godmode: diagnostics overlay %s", showDiag_ ? "on" : "off");
+}
+
 void XrApp::StartNetwork() {
-    netThread_ = std::thread([this]() {
+    int gen = ++netGen_;
+    netThread_ = std::thread([this, gen]() {
         auto& cfg = Config::Instance();
         // v0.5.0: check for manual IP override first.
         std::string override = cfg.GetString(ConfigKey::PhoneIpOverride);
@@ -546,6 +574,12 @@ void XrApp::StartNetwork() {
             Notify::Instance().Error(
                 "Phone not found",
                 "Check WiFi, tap Start on phone app");
+            return;
+        }
+
+        // v0.6.0: abort if StopNetwork was called during discovery.
+        if (gen != netGen_.load()) {
+            LOGI("network: start aborted (stopped during discovery)");
             return;
         }
 
@@ -634,6 +668,40 @@ bool XrApp::Init(android_app* app) {
     if (!notifyOverlay_.Init()) {
         LOGW("v0.5.0: notify overlay init failed (non-fatal)");
     }
+    // v0.6.0: VR environment backdrop (skipped in passthrough mode).
+    envReady_ = env_.Init();
+    if (!envReady_) {
+        LOGW("v0.6.0: environment init failed (non-fatal)");
+    }
+    // v0.6.0: in-VR menu (Y-tap to open).
+    {
+        MenuActions actions;
+        actions.isStreaming = [this]() { return IsStreaming(); };
+        actions.toggleStream = [this]() {
+            if (IsStreaming()) {
+                StopNetwork();
+            } else {
+                StartNetwork();
+            }
+        };
+        actions.toggleDiagnostics = [this]() { ToggleDiagnostics(); };
+        actions.isPassthrough = [this]() {
+            return passthroughLayer_ != XR_NULL_HANDLE &&
+                   Config::Instance().GetBool(ConfigKey::PassthroughEnabled);
+        };
+        actions.togglePassthrough = []() {
+            auto& cfg = Config::Instance();
+            bool on = !cfg.GetBool(ConfigKey::PassthroughEnabled);
+            cfg.SetBool(ConfigKey::PassthroughEnabled, on);
+            Notify::Instance().Info(
+                on ? "Passthrough on" : "VR room on",
+                on ? "Mixed reality" : "Virtual environment");
+        };
+        actions.versionString = []() { return std::string("v0.6.0"); };
+        if (!menu_.Init(actions)) {
+            LOGW("v0.6.0: menu init failed (non-fatal)");
+        }
+    }
     if (!InitXrSession()) return false;
     if (!InitSwapchains()) return false;
     // XR dev tools: one-time device capability snapshot (logged; the live
@@ -683,6 +751,8 @@ void XrApp::Shutdown() {
     surfaceTexture_.Release();
     input_.Shutdown();
     quadRenderer_.Shutdown();
+    menu_.Shutdown();
+    env_.Shutdown();
     if (videoTex_) {
         glDeleteTextures(1, &videoTex_);
         videoTex_ = 0;
@@ -1413,9 +1483,18 @@ void XrApp::RenderLayer(XrTime predictedTime) {
                           touchPulseT_ < 0.5f ? 1.0f - touchPulseT_ / 0.5f
                                               : 0.0f);
 
-    HandleTouch(head, dispPos, dispQuat, dispW, dispH);
-    // v0.4.0: direct finger touch takes priority over the controller ray.
-    HandleFingerTouch(dispPos, dispQuat, dispW, dispH);
+    // v0.6.0: when the menu is open and the pointer is on it, the menu
+    // captures input — a trigger pull on a menu button must not also
+    // send a touch to the phone.
+    bool menuCaptures = menu_.ConsumesInput();
+    if (!menuCaptures) {
+        HandleTouch(head, dispPos, dispQuat, dispW, dispH);
+        // v0.4.0: direct finger touch takes priority over the controller ray.
+        HandleFingerTouch(dispPos, dispQuat, dispW, dispH);
+    }
+    // v0.6.0: in-VR menu — Y quick-tap toggles (Y-hold stays voice).
+    // Updated every frame so the toggle always responds.
+    menu_.Update(dt, input_, head, (float)frameCount_ / 72.0f);
 
     // GODMODE: A cycles the avatar debug visualization (off/wire/normals).
     if (input_.APressed() && avatarReady_) {
@@ -1430,10 +1509,9 @@ void XrApp::RenderLayer(XrTime predictedTime) {
         LOGW("godmode: avatar debug mode = %d", (int)next);
     }
     // B toggles the diagnostics overlay (starts a LAN scan when opened).
+    // v0.6.0: shared with the in-VR menu's Diagnostics row.
     if (input_.BPressed()) {
-        showDiag_ = !showDiag_;
-        if (showDiag_) netProbe_.StartScan(1500);
-        LOGW("godmode: diagnostics overlay %s", showDiag_ ? "on" : "off");
+        ToggleDiagnostics();
     }
     if (showDiag_ && head.valid) BuildDiagContent();
 
@@ -1445,9 +1523,16 @@ void XrApp::RenderLayer(XrTime predictedTime) {
         tint[2] = 1.0f;
     }
 
+    // v0.6.0: passthrough is user-toggleable (menu > Environment).
+    // When off, the VR environment backdrop renders instead.
+    bool passthroughOn = passthroughLayer_ != XR_NULL_HANDLE &&
+                         Config::Instance().GetBool(ConfigKey::PassthroughEnabled);
+    bool envOn = envReady_ &&
+                 Config::Instance().GetBool(ConfigKey::EnvironmentEnabled);
+
     std::vector<XrCompositionLayerBaseHeader*> layers;
     XrCompositionLayerPassthroughFB pl{XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB};
-    if (passthroughLayer_ != XR_NULL_HANDLE) {
+    if (passthroughOn) {
         pl.layerHandle = passthroughLayer_;
         layers.push_back((XrCompositionLayerBaseHeader*)&pl);
     }
@@ -1494,6 +1579,12 @@ void XrApp::RenderLayer(XrTime predictedTime) {
         glViewport(0, 0, sc.width, sc.height);
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // v0.6.0: VR environment backdrop (skipped in passthrough mode —
+        // the real world is the backdrop there).
+        float timeSec = (float)frameCount_ / 72.0f;
+        if (!passthroughOn && envOn) {
+            env_.Draw(viewProj, vpos, timeSec);
+        }
         if (showHands) {
             // Premium path: articulated hands (+ smartwatch on the left
             // wrist), depth-tested.
@@ -1585,6 +1676,11 @@ void XrApp::RenderLayer(XrTime predictedTime) {
                     toastPos, BillboardQuat(head.pos, toastPos));
                 notifyOverlay_.Draw(viewProj, toastModel, 0.35f);
             }
+        }
+
+        // v0.6.0: in-VR menu panel (drawn last so it sits on top).
+        if (menu_.IsOpen() && head.valid) {
+            menu_.Draw(viewProj, head.pos);
         }
 
         XrSwapchainImageReleaseInfo rel{XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};

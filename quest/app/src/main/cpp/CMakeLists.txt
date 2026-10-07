@@ -24,6 +24,8 @@ add_library(xrwrist SHARED
     voice.cpp
     config.cpp
     notify.cpp
+    environment.cpp
+    menu.cpp
     ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 )
 

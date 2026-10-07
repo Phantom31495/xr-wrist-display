@@ -51,7 +51,18 @@ mkdir -p $WORK/classes
 STDLIB=~/dl/kotlinc/lib/kotlin-stdlib.jar
 find $SRC/java -name "*.kt" > $WORK/sources.txt
 find $WORK/gen -name "*.java" >> $WORK/sources.txt
-$KOTLINC -cp $PLATFORM -d $WORK/classes @${WORK}/sources.txt -jvm-target 17 2>&1 | grep -v "^$" | head -30 || true
+set +e
+$KOTLINC -cp $PLATFORM -d $WORK/classes @${WORK}/sources.txt -jvm-target 17 > $WORK/kotlinc.log 2>&1
+KOTLIN_RC=$?
+set -e
+grep -v "^$" $WORK/kotlinc.log | head -30 || true
+if [ $KOTLIN_RC -ne 0 ] || grep -qE "error:" $WORK/kotlinc.log; then
+  echo "KOTLINC FAILED — aborting build"
+  grep -E "error:" $WORK/kotlinc.log | head -20
+  exit 1
+fi
+[ -n "$(find $WORK/classes -name '*.class' | head -1)" ] || { echo "KOTLINC produced no classes — aborting"; exit 1; }
+echo "kotlinc ok: $(find $WORK/classes -name '*.class' | wc -l) classes"
 
 echo "=== d8 ==="
 mkdir -p $WORK/dex

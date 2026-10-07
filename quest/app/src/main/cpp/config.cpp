@@ -38,6 +38,9 @@ void Config::ResetDefaults() {
     floats_[ConfigKey::WatchGlowIntensity] = 1.0f;
     // Godmode
     bools_[ConfigKey::GodmodeEnabled] = true;
+    // v0.6.0: environment + menu
+    bools_[ConfigKey::PassthroughEnabled] = true;
+    bools_[ConfigKey::EnvironmentEnabled] = true;
     // System
     bools_[ConfigKey::FirstRunComplete] = false;
 }

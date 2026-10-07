@@ -50,6 +50,10 @@ enum class ConfigKey {
     // Godmode
     GodmodeEnabled,      // bool: dev console available (default true)
 
+    // v0.6.0: environment + menu
+    PassthroughEnabled,  // bool: mixed-reality passthrough (default true)
+    EnvironmentEnabled,  // bool: VR room backdrop (default true)
+
     // System
     FirstRunComplete,    // bool: onboarding shown (default false)
 };

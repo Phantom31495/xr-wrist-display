@@ -592,14 +592,16 @@ void TextOverlay::Draw(const Mat4& viewProj, const Mat4& panelModel,
     glDisable(GL_DEPTH_TEST);
 
     // Background plate: unit quad scaled to the content pixel extents.
-    {
+    // v0.6.0: color/enable are configurable (menu draws its own plates).
+    if (bgEnabled_) {
         Mat4 bgScale = Mat4::Identity();
         bgScale.m[0] = (float)(cols * 8);
         bgScale.m[5] = (float)(rows * 8);
         Mat4 bgMvp = mvp * bgScale;
         glUseProgram(bgProg_);
         glUniformMatrix4fv(uBgMvp_, 1, GL_FALSE, bgMvp.m);
-        glUniform4f(uBgColor_, 0.02f, 0.03f, 0.04f, 0.72f);
+        glUniform4f(uBgColor_, bgColor_[0], bgColor_[1], bgColor_[2],
+                    bgColor_[3]);
         glBindVertexArray(bgVao_);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);

@@ -12,6 +12,7 @@
 #include <EGL/egl.h>
 #include <android_native_app_glue.h>
 
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -21,6 +22,8 @@
 #include "video.h"
 #include "avatar.h"
 #include "devtools.h"
+#include "environment.h"
+#include "menu.h"
 
 namespace xrwrist {
 
@@ -56,6 +59,9 @@ private:
     bool InitPassthrough();
     void InitRefreshRate();  // optional XR_FB_display_refresh_rate (90 Hz)
     void StartNetwork();  // background: discovery -> decoder -> clients
+    void StopNetwork();   // v0.6.0: stop stream (menu toggle)
+    bool IsStreaming() const;  // v0.6.0: any client running
+    void ToggleDiagnostics();  // v0.6.0: godmode overlay (menu + B button)
 
     void HandleSessionState(XrSessionState state, bool& exitRequested);
     void ComputeQuadPose(const XrInput::Pose& head, Vec3& outPos, Quat& outQuat,
@@ -193,6 +199,11 @@ private:
     // (vs manual X+Y or auto-transition). If engage caused it, disengaging
     // returns the panel to the wrist.
     bool engageDetached_ = false;
+    // ---- v0.6.0: VR environment + in-VR menu ----
+    EnvironmentRenderer env_;
+    bool envReady_ = false;
+    VrMenu menu_;
+    std::atomic<int> netGen_{0};  // StartNetwork generation (for Stop)
 };
 
 }  // namespace xrwrist
